@@ -1,0 +1,182 @@
+/* NexRoute — design tokens
+   Baseline type is already large (per feedback: "font size has to be
+   bigger and less clutter" is the default, not an opt-in mode). */
+
+:root {
+  --navy: #0F2A3D;
+  --teal: #0E7C7B;
+  --teal-deep: #0A5F5E;
+  --green: #1F7A4D;
+  --amber: #B9791F;
+  --red: #B23B2A;
+  --paper: #F6F5F0;
+  --card: #FFFFFF;
+  --line: #D8D4C6;
+  --ink: #191D1F;
+  --ink-soft: #4B5259;
+  --radius: 12px;
+  --font: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --shadow: 0 2px 10px rgba(15,42,61,0.08);
+}
+
+[hidden] { display: none !important; }
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; font-family: var(--font); background: var(--paper); color: var(--ink);
+  font-size: 1.15rem; line-height: 1.55;
+}
+h1 { font-size: 1.9rem; margin: 0.2rem 0 0.3rem; color: var(--navy); }
+h2 { font-size: 1.3rem; color: var(--navy); margin-top: 1.6rem; }
+.lede { color: var(--ink-soft); margin: 0 0 1.2rem; }
+.lede.small { font-size: 0.95rem; }
+
+button { font-family: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid #1B6FE0; outline-offset: 2px; }
+
+.skip-link { position: absolute; left: -999px; top: 0; background: var(--navy); color: #fff; padding: 0.5rem 1rem; z-index: 200; }
+.skip-link:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ---------------- Top bar ---------------- */
+.topbar {
+  display: flex; align-items: center; gap: 0.8rem;
+  background: var(--navy); color: #fff; padding: 0.9rem 1.1rem;
+  position: sticky; top: 0; z-index: 10;
+}
+.topbar-title { flex: 1; display: flex; flex-direction: column; line-height: 1.2; }
+.topbar-title strong { font-size: 1.3rem; }
+.topbar-sub { font-size: 0.78rem; color: #B9CBD4; }
+.back-btn, .icon-only-btn {
+  background: rgba(255,255,255,0.14); color: #fff; border: none;
+  border-radius: 8px; padding: 0.5rem 0.8rem; font-size: 1rem; font-weight: 700;
+}
+
+main { max-width: 640px; margin: 0 auto; padding: 1.3rem 1.1rem 5rem; }
+
+.screen { display: none; }
+.screen.is-active { display: block; }
+
+/* ---------------- Auth ---------------- */
+.auth-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.4rem; box-shadow: var(--shadow); }
+.auth-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.auth-tab { flex: 1; background: var(--paper); border: 1.5px solid var(--line); border-radius: 8px; padding: 0.7rem; font-weight: 700; }
+.auth-tab.is-active { background: var(--teal); color: #fff; border-color: var(--teal); }
+.field { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+.field label { font-weight: 700; }
+.field input, .field select, .field textarea {
+  font-size: 1.1rem; padding: 0.7rem 0.8rem; border: 1.5px solid var(--line);
+  border-radius: 8px; font-family: inherit; background: #fff; color: var(--ink);
+}
+.needs-fieldset { border: none; padding: 0; margin: 0 0 1rem; }
+.needs-fieldset legend { font-weight: 700; margin-bottom: 0.5rem; }
+.needs-fieldset label { display: flex; gap: 0.6rem; align-items: center; margin-bottom: 0.6rem; }
+.needs-fieldset input { width: 22px; height: 22px; }
+.form-error { color: var(--red); font-weight: 700; min-height: 1.4em; }
+
+.primary-btn {
+  background: var(--teal); color: #fff; border: none; border-radius: 10px;
+  font-weight: 700; font-size: 1.1rem; padding: 0.8rem 1.3rem;
+}
+.primary-btn:hover { background: var(--teal-deep); }
+.big-btn { width: 100%; padding: 1rem; font-size: 1.2rem; }
+.secondary-btn {
+  background: #fff; border: 2px solid var(--teal); color: var(--teal-deep);
+  border-radius: 10px; font-weight: 700; padding: 0.75rem 1.1rem; font-size: 1.05rem;
+}
+.text-link-btn { background: none; border: none; color: var(--teal-deep); font-weight: 700; text-decoration: underline; font-size: 1.05rem; margin-top: 1rem; padding: 0.4rem; }
+
+/* ---------------- Home: giant buttons ---------------- */
+.big-buttons { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.2rem; }
+.giant-btn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.15rem;
+  border: none; border-radius: var(--radius); padding: 1.3rem 1.4rem;
+  color: #fff; text-align: left; min-height: 96px; box-shadow: var(--shadow);
+}
+.giant-btn-icon { font-size: 1.8rem; }
+.giant-btn-text { font-size: 1.35rem; font-weight: 700; }
+.giant-btn-sub { font-size: 0.92rem; opacity: 0.9; }
+.giant-btn--primary { background: var(--teal); }
+.giant-btn--safety { background: var(--navy); }
+.giant-btn--call { background: var(--green); }
+
+/* ---------------- Banners ---------------- */
+.banner {
+  border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 1rem; font-weight: 700;
+  background: #FBE9E4; color: var(--red); border: 2px solid var(--red);
+}
+.status-banner {
+  border-radius: var(--radius); padding: 1.4rem; margin-bottom: 1rem;
+  font-size: 1.3rem; font-weight: 800; text-align: center;
+}
+.status-banner.ok { background: #E4F3E9; color: var(--green); border: 3px solid var(--green); }
+.status-banner.warn { background: #FBF0DA; color: var(--amber); border: 3px solid var(--amber); }
+.status-banner.bad { background: #FBE9E4; color: var(--red); border: 3px solid var(--red); }
+
+/* ---------------- Route / map ---------------- */
+.route-map { height: 220px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+.map-attribution { font-size: 0.78rem; color: var(--ink-soft); margin: 0.3rem 0 1rem; }
+.leg-list { list-style: none; margin: 0; padding: 0; }
+.leg-list li {
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 0.9rem 1.1rem; margin-bottom: 0.7rem; display: flex; gap: 0.8rem; align-items: baseline;
+}
+.leg-list .leg-num { font-weight: 800; color: var(--teal-deep); }
+.action-row { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-top: 1rem; }
+
+.lift-detail table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+.lift-detail th, .lift-detail td { padding: 0.5rem 0.5rem; border-bottom: 1px solid var(--line); text-align: left; font-size: 1rem; }
+.lift-detail .demo-badge, .badge { display: inline-block; font-size: 0.75rem; font-weight: 800; border-radius: 999px; padding: 0.15rem 0.6rem; margin-left: 0.4rem; }
+.badge.live { background: #E4F3E9; color: var(--green); }
+.badge.demo { background: #FBF0DA; color: var(--amber); }
+
+/* ---------------- More / menus ---------------- */
+.menu-list { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 1rem; }
+.menu-item {
+  background: var(--card); border: 1.5px solid var(--line); border-radius: 10px;
+  padding: 1rem 1.2rem; text-align: left; font-size: 1.1rem; font-weight: 700; color: var(--ink);
+  box-shadow: var(--shadow);
+}
+.pref-toggle {
+  display: flex; align-items: center; gap: 0.8rem; background: var(--card);
+  border: 1.5px solid var(--line); border-radius: 10px; padding: 0.9rem 1rem; margin-bottom: 0.7rem; font-size: 1.05rem;
+}
+.pref-toggle input { width: 24px; height: 24px; }
+.pref-toggle small { color: var(--ink-soft); font-weight: 400; }
+.save-confirm { color: var(--green); font-weight: 700; min-height: 1.4em; }
+
+.family-code { font-size: 2rem; font-weight: 800; letter-spacing: 0.2em; text-align: center; background: var(--card); border: 2px dashed var(--teal); border-radius: var(--radius); padding: 1rem; margin: 1rem 0; }
+
+/* ---------------- Modal (confirmation only — no ads, no popups otherwise) ---------------- */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(15,42,61,0.55);
+  display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1.2rem;
+}
+.modal-card { background: #fff; border-radius: var(--radius); padding: 1.4rem; max-width: 380px; width: 100%; }
+.modal-card p { font-size: 1.2rem; font-weight: 700; margin: 0 0 1.2rem; }
+.modal-actions { display: flex; gap: 0.8rem; }
+.modal-actions button { flex: 1; }
+
+/* ---------------- Audio bar ---------------- */
+.audio-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy); color: #fff;
+  display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1.1rem; z-index: 90;
+}
+.audio-bar button { background: rgba(255,255,255,0.15); color: #fff; border: none; border-radius: 8px; padding: 0.5rem 0.8rem; font-weight: 700; }
+.audio-label { flex: 1; font-size: 0.95rem; }
+
+.app-footer { text-align: center; color: var(--ink-soft); font-size: 0.8rem; padding: 1rem; }
+
+/* ---------------- High contrast (opt-in preference, not forced) ---------------- */
+body.high-contrast {
+  --navy: #000000; --teal: #FFD400; --teal-deep: #FFD400; --green: #7CFFB2; --amber: #FFD400; --red: #FF6B57;
+  --paper: #000000; --card: #0B0B0B; --line: #FFD400; --ink: #FFFFFF; --ink-soft: #E6E6E6;
+}
+body.high-contrast .primary-btn, body.high-contrast .secondary-btn { color: #000; }
+body.high-contrast .field input, body.high-contrast .field select, body.high-contrast .field textarea { color: #fff; }
+
+/* ---------------- Large text (opt-in, on top of the already-bigger baseline) ---------------- */
+body.large-text { font-size: 1.4rem; }
+body.large-text h1 { font-size: 2.2rem; }
+body.large-text .giant-btn-text { font-size: 1.55rem; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

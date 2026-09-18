@@ -1,0 +1,14 @@
+{
+  "name": "nexroute-backend",
+  "version": "1.0.0",
+  "description": "NexRoute backend — LTA DataMall / data.gov.sg / OneMap integration layer plus app logic (auth, reports, family check-ins).",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

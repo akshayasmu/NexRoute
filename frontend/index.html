@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0" />
+<title>NexRoute — By its people, for its people</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- ============ TOP BAR (always visible) ============ -->
+<header class="topbar">
+  <button id="backBtn" class="back-btn" type="button" hidden>← Back</button>
+  <div class="topbar-title">
+    <strong>NexRoute</strong>
+    <span class="topbar-sub">By its people, for its people</span>
+  </div>
+  <button id="settingsBtn" class="icon-only-btn" type="button" title="Preferences" aria-label="Preferences">⚙️</button>
+</header>
+
+<main id="main">
+
+  <!-- ============ HOME (buttons-first, per the persona skeleton) ============ -->
+  <section class="screen is-active" id="screen-home">
+    <h1 id="homeGreeting">Hello</h1>
+    <p class="lede">Everything you need is one tap away. Nothing here changes unless you ask it to.</p>
+
+    <div class="big-buttons">
+      <button class="giant-btn giant-btn--primary" id="btnGoRoute" type="button">
+        <span class="giant-btn-icon">🚇</span>
+        <span class="giant-btn-text" id="btnGoRouteLabel">Go to Outram Park (for SGH)</span>
+        <span class="giant-btn-sub">My saved fortnightly route</span>
+      </button>
+
+      <button class="giant-btn giant-btn--safety" id="btnCheckSafe" type="button">
+        <span class="giant-btn-icon">🛗</span>
+        <span class="giant-btn-text">Is my route safe today?</span>
+        <span class="giant-btn-sub">Checks lifts today and tomorrow</span>
+      </button>
+
+      <button class="giant-btn giant-btn--call" id="btnCallStaff" type="button">
+        <span class="giant-btn-icon">📞</span>
+        <span class="giant-btn-text">Call station staff</span>
+        <span class="giant-btn-sub">Speak to someone directly</span>
+      </button>
+    </div>
+
+    <button class="text-link-btn" id="btnMore" type="button">More options</button>
+  </section>
+
+  <!-- ============ ROUTE DETAIL ============ -->
+  <section class="screen" id="screen-route">
+    <h1>Your route</h1>
+    <div id="disruptionBanner" class="banner" hidden></div>
+
+    <div id="routeMap" class="route-map" aria-hidden="true"></div>
+    <p class="map-attribution">© OpenStreetMap contributors</p>
+
+    <ol class="leg-list" id="legList"></ol>
+
+    <div class="action-row">
+      <button class="secondary-btn" id="btnNarrateRoute" type="button">🔊 Read this aloud</button>
+      <button class="secondary-btn" id="btnOptionalGame" type="button" hidden>🎮 Play while you wait</button>
+    </div>
+  </section>
+
+  <!-- ============ LIFT / SAFETY STATUS ============ -->
+  <section class="screen" id="screen-lift">
+    <h1>Is my route safe?</h1>
+    <div id="liftBannerToday" class="status-banner"></div>
+    <h2>Tomorrow</h2>
+    <div id="liftBannerTomorrow" class="status-banner"></div>
+
+    <div id="liftDetailToday" class="lift-detail"></div>
+
+    <div class="action-row">
+      <button class="secondary-btn" id="btnNarrateLift" type="button">🔊 Read this aloud</button>
+      <button class="primary-btn" id="btnSaveImage" type="button">⬇ Save as image</button>
+    </div>
+    <p class="lede small">Save this to your photos so you don't need to reopen the app before you leave.</p>
+    <canvas id="snapshotCanvas" width="640" height="420" hidden></canvas>
+  </section>
+
+  <!-- ============ MORE / SECONDARY OPTIONS ============ -->
+  <section class="screen" id="screen-more">
+    <h1>More options</h1>
+    <div class="menu-list">
+      <button class="menu-item" data-goto="screen-prefs">Preferences &amp; my needs</button>
+      <button class="menu-item" data-goto="screen-report">Report a barrier</button>
+      <button class="menu-item" data-goto="screen-family">Family mode</button>
+      <button class="menu-item" id="btnResetDevice">Reset my saved preferences</button>
+    </div>
+  </section>
+
+  <!-- ============ PREFERENCES ============ -->
+  <section class="screen" id="screen-prefs">
+    <h1>Preferences &amp; my needs</h1>
+    <form id="prefsForm">
+      <label class="pref-toggle"><input type="checkbox" id="prefAvoidStairs" /> <span>Avoid stairs — need lifts</span></label>
+      <label class="pref-toggle"><input type="checkbox" id="prefSheltered" /> <span>Prefer sheltered walkways</span></label>
+      <label class="pref-toggle"><input type="checkbox" id="prefSlowWalk" /> <span>Walk slowly — allow extra time</span></label>
+      <label class="pref-toggle"><input type="checkbox" id="prefLargeText" /> <span>Large text</span></label>
+      <label class="pref-toggle"><input type="checkbox" id="prefHighContrast" /> <span>High contrast colours</span></label>
+      <label class="pref-toggle"><input type="checkbox" id="prefGames" /> <span>Show optional games while waiting <small>(uses more battery)</small></span></label>
+      <button class="primary-btn big-btn" type="submit">Save preferences</button>
+      <p class="save-confirm" id="prefsSaved" role="status"></p>
+    </form>
+
+    <h2>Read aloud settings</h2>
+    <div class="field">
+      <label for="speechRate">Speaking speed</label>
+      <input type="range" id="speechRate" min="0.7" max="1.3" step="0.1" value="0.95" />
+    </div>
+  </section>
+
+  <!-- ============ REPORT A BARRIER ============ -->
+  <section class="screen" id="screen-report">
+    <h1>Report a barrier</h1>
+    <p class="lede">Your report is reviewed before it's shown to other commuters, so a mistaken tap can't send out a false alert.</p>
+    <form id="reportForm">
+      <div class="field">
+        <label for="reportType">What's the problem?</label>
+        <select id="reportType">
+          <option>Lift not working</option>
+          <option>Exit blocked</option>
+          <option>No shelter from rain</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="reportComment">Tell us more</label>
+        <textarea id="reportComment" rows="3"></textarea>
+      </div>
+      <button class="primary-btn big-btn" type="submit">Submit report</button>
+    </form>
+
+    <h2>My reports</h2>
+    <div id="myReports" class="menu-list"></div>
+
+    <button class="text-link-btn" id="btnStaffDemo" type="button">Staff demo view (for judges)</button>
+    <div id="staffPanel" class="menu-list" hidden></div>
+  </section>
+
+  <!-- ============ FAMILY MODE ============ -->
+  <section class="screen" id="screen-family">
+    <h1>Family mode</h1>
+    <p class="lede">Share this code with someone you trust. They can see when you last checked in — never your live location.</p>
+    <div class="family-code" id="familyCode">——————</div>
+
+    <button class="secondary-btn" id="btnCheckIn" type="button">I've arrived — check in now</button>
+
+    <hr />
+    <h2>Following someone?</h2>
+    <div class="field">
+      <label for="familyLookupCode">Enter their code</label>
+      <input id="familyLookupCode" type="text" style="text-transform:uppercase" />
+    </div>
+    <button class="secondary-btn" id="btnFamilyLookup" type="button">Check status</button>
+    <div id="familyStatus" class="status-banner" hidden></div>
+  </section>
+
+</main>
+
+<!-- ============ Reusable confirmation modal ============ -->
+<div class="modal-overlay" id="confirmOverlay" hidden>
+  <div class="modal-card" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <p id="confirmTitle">Are you sure?</p>
+    <div class="modal-actions">
+      <button class="secondary-btn" id="confirmCancel" type="button">Cancel</button>
+      <button class="primary-btn" id="confirmOk" type="button">Yes, continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Voice / audio control bar ============ -->
+<div class="audio-bar" id="audioBar" hidden>
+  <button id="audioPlayPause" type="button">⏸</button>
+  <button id="audioReplay" type="button">⟲ Replay</button>
+  <span class="audio-label">Reading aloud…</span>
+  <button id="audioStop" type="button">✕ Stop</button>
+</div>
+
+<footer class="app-footer">
+  <p>Prototype build. Live-data badges show real LTA / data.gov.sg calls when a key is set — otherwise labelled demo data. See README.</p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
