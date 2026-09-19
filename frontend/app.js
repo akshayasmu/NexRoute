@@ -216,16 +216,28 @@ function renderMap() {
     leafletMap = L.map("routeMap", { zoomControl: false, attributionControl: false });
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18 }).addTo(leafletMap);
   }
-  fetch(`${API}/api/stations`)
+  fetch(`${API}/api/route/journey`)
     .then((r) => r.json())
-    .then((stations) => {
-      const from = stations.EW5, to = stations.EW23;
+    .then(({ source, segments }) => {
       leafletMap.eachLayer((l) => { if (l instanceof L.Marker || l instanceof L.Polyline) leafletMap.removeLayer(l); });
-      const bounds = L.latLngBounds([from.lat, from.lng], [to.lat, to.lng]);
-      leafletMap.fitBounds(bounds, { padding: [30, 30] });
-      L.marker([from.lat, from.lng]).addTo(leafletMap).bindPopup(from.name);
-      L.marker([to.lat, to.lng]).addTo(leafletMap).bindPopup(to.name);
-      L.polyline([[from.lat, from.lng], [to.lat, to.lng]], { color: "#0E7C7B", weight: 4, dashArray: "6 6" }).addTo(leafletMap);
+      const badge = document.getElementById("mapSource");
+      badge.className = `badge ${source === "live" ? "live" : "demo"}`;
+      badge.textContent = source === "live" ? "LIVE" : "DEMO";
+
+      const all = [];
+      segments.forEach((seg) => {
+        const isRail = seg.type === "rail";
+        // A straight-line fallback (OneMap unavailable) stays dashed so it is never mistaken for a real path.
+        L.polyline(seg.coordinates, {
+          color: isRail ? "#0E7C7B" : "#0F2A3D", weight: isRail ? 5 : 4,
+          dashArray: seg.source === "live" ? (isRail ? null : "2 8") : "6 6",
+        }).addTo(leafletMap).bindPopup(seg.label);
+        all.push(...seg.coordinates);
+      });
+      const first = segments[0], last = segments[segments.length - 1];
+      L.marker(first.coordinates[0]).addTo(leafletMap).bindPopup(first.label.split(" to ")[0]);
+      L.marker(last.coordinates[last.coordinates.length - 1]).addTo(leafletMap).bindPopup(last.label.split(" to ")[1]);
+      leafletMap.fitBounds(L.latLngBounds(all), { padding: [30, 30] });
     });
 }
 

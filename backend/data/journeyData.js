@@ -51,4 +51,11 @@ const stationCoords = {
   EW23: { name: "Outram Park MRT", lat: 1.28, lng: 103.8395 },
 };
 
-module.exports = { journey, exits, stationCoords };
+// Endpoints of the two walking legs. HOME IS A PLACEHOLDER point a few
+// hundred metres from Bedok MRT, not a real address; SGH is approximate.
+const journeyPoints = {
+  home: { name: "Home (placeholder)", lat: 1.3265, lng: 103.933 },
+  sgh: { name: "Singapore General Hospital", lat: 1.2794, lng: 103.8357 },
+};
+
+module.exports = { journey, exits, stationCoords, journeyPoints };
