@@ -51,11 +51,15 @@ const stationCoords = {
   EW23: { name: "Outram Park MRT", lat: 1.28, lng: 103.8395 },
 };
 
-// Endpoints of the two walking legs. HOME IS A PLACEHOLDER point a few
-// hundred metres from Bedok MRT, not a real address; SGH is approximate.
-const journeyPoints = {
-  home: { name: "Home (placeholder)", lat: 1.3265, lng: 103.933 },
-  sgh: { name: "Singapore General Hospital", lat: 1.2794, lng: 103.8357 },
+const toilets = {
+  EW23: [
+    // Manually compiled for this prototype — not from a live feed. LTA/OneMap
+    // don't expose an accessible-toilet layer, so this is honestly "manual"
+    // data, labelled as such wherever it's shown.
+    { name: "Outram Park MRT, near Exit 4", accessible: true, distanceM: 60 },
+    { name: "SGH Block 1 lobby", accessible: true, distanceM: 420 },
+    { name: "Outram Park MRT, near Exit 3", accessible: false, distanceM: 90 },
+  ],
 };
 
-module.exports = { journey, exits, stationCoords, journeyPoints };
+module.exports = { journey, exits, stationCoords, toilets };

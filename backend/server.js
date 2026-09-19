@@ -16,7 +16,7 @@ const path = require("path");
 const lta = require("./services/ltaClient");
 const weather = require("./services/weatherClient");
 const onemap = require("./services/onemapClient");
-const { journey, exits, stationCoords, journeyPoints } = require("./data/journeyData");
+const { journey, exits, stationCoords, toilets } = require("./data/journeyData");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -138,34 +138,30 @@ app.get("/api/route/walk", async (req, res) => {
   }
 });
 
-// The whole door-to-door path: walk -> rail ("pt") -> walk. Each segment is
-// routed separately so one OneMap failure only degrades that segment, which
-// is then a straight line explicitly marked source:"demo".
-app.get("/api/route/journey", async (req, res) => {
-  const { home, sgh } = journeyPoints;
-  const bedok = stationCoords.EW5, outram = stationCoords.EW23;
-  const ll = (p) => `${p.lat},${p.lng}`;
-  const plan = [
-    { type: "walk", label: "Home to Bedok MRT", from: home, to: bedok, routeType: "walk" },
-    { type: "rail", label: "Bedok to Outram Park", from: bedok, to: outram, routeType: "pt" },
-    { type: "walk", label: "Outram Park to SGH", from: outram, to: sgh, routeType: "walk" },
-  ];
-  const segments = await Promise.all(
-    plan.map(async ({ type, label, from, to, routeType }) => {
-      try {
-        const route = await onemap.getRoute(ll(from), ll(to), routeType);
-        const coordinates = onemap.routeCoordinates(route, routeType);
-        if (coordinates.length < 2) throw new Error("OneMap returned no geometry");
-        return { type, label, source: "live", coordinates };
-      } catch (err) {
-        return { type, label, source: "demo", coordinates: [[from.lat, from.lng], [to.lat, to.lng]] };
-      }
-    })
-  );
-  res.json({ source: segments.every((s) => s.source === "live") ? "live" : "demo", segments });
+app.get("/api/stations", (req, res) => res.json(stationCoords));
+
+// ---------------- Accessible toilets — manually compiled, not a live feed ----------------
+
+app.get("/api/toilets/:stationCode", (req, res) => {
+  const list = toilets[req.params.stationCode];
+  if (!list) return res.status(404).json({ error: "No toilet data for this station in the prototype." });
+  res.json({ source: "manual", list });
 });
 
-app.get("/api/stations", (req, res) => res.json(stationCoords));
+// ---------------- Virtual orchids — a light peer thank-you, not a real account system ----------------
+
+let orchidInboxes = {}; // code -> [{ message, at }]
+
+app.post("/api/orchids/:code", (req, res) => {
+  const code = req.params.code;
+  if (!orchidInboxes[code]) orchidInboxes[code] = [];
+  orchidInboxes[code].push({ message: (req.body.message || "Thank you! 🌸").slice(0, 120), at: new Date().toISOString() });
+  res.status(201).json({ ok: true });
+});
+
+app.get("/api/orchids/:code", (req, res) => {
+  res.json(orchidInboxes[req.params.code] || []);
+});
 
 // ---------------- Reports — with a required verification step ----------------
 // Mdm Lim's family flagged that an unverified "report a barrier" button can

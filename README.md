@@ -122,7 +122,23 @@ Everything below came from direct feedback:
 | Confirm before any state change | A shared `confirmAction()` modal gates: logging out, saving preferences, submitting a report, calling staff, checking in for family mode |
 | Family mode | Each account gets a share code; a family member enters it to see only a last-check-in label and time — never live location, and only after the user explicitly taps "I've arrived" |
 
-## Data & privacy notes (for your write-up, per PS2 ground rule 2.5)
+## Second round of changes (UI restyle + Improvements II)
+
+| Feedback | What changed |
+|---|---|
+| "UI looks 100% AI generated, want the earlier look back" | Restyled around the metro-line route cards, teal/navy palette, and tabbed navigation from the first prototype — the flat giant-button layout is gone |
+| Safety stamps → free Kopi-O-Kosong | Rewards tab: 10 stamps (tapped after a safe journey) unlocks a mock voucher code. Entirely local (localStorage) — not a real loyalty backend |
+| Virtual orchid to thank another commuter | A tiny peer-to-peer feature: `/api/orchids/:code` lets anyone with a NexRoute code receive a thank-you note. No accounts involved, just codes |
+| Kampung Trivia game | Replaces the memory-match game; five questions about old Bedok/Outram Park history and kopitiam culture, still gated behind the "optional games" toggle (battery note kept) |
+| "Keep the Plan Your Journey interface, it looked good" | Restored as the Journey tab: route card with a suitability score, leg pills, stats grid, disruption banner |
+| Exit/crowd guide overwhelming | Now a collapsed `<details>` panel that only appears (and only loads) after "Check my journey now" is pressed |
+| Saved trips without login, available offline | Routines tab is pure `localStorage`, no server round-trip at all. Journey/lift-status responses are also cached client-side; if a fetch fails, the last-known data is shown with an "Offline — showing saved data" banner instead of a blank screen |
+| Chatbot → family mode + direct number | No chatbot anywhere now. "Family & Help" tab has the call-staff button front and center, plus family check-in |
+| "Can we do a feature without APIs for now?" | EZ-Link is shown as a labelled concept card with a fake balance — there's no public EZ-Link developer API today, so this is honestly a mock-up, not a real integration. Toilets are "manual" data (badge says so) since no LTA/OneMap layer covers this |
+| Nearest accessible toilets | Small manually-compiled list near Outram Park, shown in the same progressive-disclosure panel as the exit guide |
+| "A mode for each age group" | Preferences now has Youth / Adult / Senior as a single tap that sets sensible defaults (Senior turns on large text), with the individual toggles (stairs, shelter, contrast, etc.) still available underneath for fine-tuning |
+
+
 
 - Accounts are `name + 4-digit PIN`, held in memory only — this resets on
   every server restart. That's fine for a hackathon demo; say plainly in

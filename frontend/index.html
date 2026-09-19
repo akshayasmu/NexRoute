@@ -14,72 +14,68 @@
 
 <a class="skip-link" href="#main">Skip to main content</a>
 
-<!-- ============ TOP BAR (always visible) ============ -->
 <header class="topbar">
-  <button id="backBtn" class="back-btn" type="button" hidden>← Back</button>
   <div class="topbar-title">
     <strong>NexRoute</strong>
     <span class="topbar-sub">By its people, for its people</span>
   </div>
+  <span class="offline-pill" id="offlinePill" hidden>Offline — showing saved data</span>
   <button id="settingsBtn" class="icon-only-btn" type="button" title="Preferences" aria-label="Preferences">⚙️</button>
 </header>
 
+<nav class="tabbar" aria-label="Main sections">
+  <button class="tab-btn is-active" data-tab="journey">Journey</button>
+  <button class="tab-btn" data-tab="routines">Routines</button>
+  <button class="tab-btn" data-tab="rewards">Rewards</button>
+  <button class="tab-btn" data-tab="family">Family &amp; Help</button>
+  <button class="tab-btn" data-tab="prefs">Preferences</button>
+</nav>
+
 <main id="main">
 
-  <!-- ============ HOME (buttons-first, per the persona skeleton) ============ -->
-  <section class="screen is-active" id="screen-home">
-    <h1 id="homeGreeting">Hello</h1>
-    <p class="lede">Everything you need is one tap away. Nothing here changes unless you ask it to.</p>
-
-    <div class="big-buttons">
-      <button class="giant-btn giant-btn--primary" id="btnGoRoute" type="button">
-        <span class="giant-btn-icon">🚇</span>
-        <span class="giant-btn-text" id="btnGoRouteLabel">Go to Outram Park (for SGH)</span>
-        <span class="giant-btn-sub">My saved fortnightly route</span>
-      </button>
-
-      <button class="giant-btn giant-btn--safety" id="btnCheckSafe" type="button">
-        <span class="giant-btn-icon">🛗</span>
-        <span class="giant-btn-text">Is my route safe today?</span>
-        <span class="giant-btn-sub">Checks lifts today and tomorrow</span>
-      </button>
-
-      <button class="giant-btn giant-btn--call" id="btnCallStaff" type="button">
-        <span class="giant-btn-icon">📞</span>
-        <span class="giant-btn-text">Call station staff</span>
-        <span class="giant-btn-sub">Speak to someone directly</span>
-      </button>
+  <!-- ============ JOURNEY ============ -->
+  <section class="tab-panel is-active" id="panel-journey">
+    <div class="routine-hero">
+      <h2 id="routineName">Bedok → Outram Park (for SGH)</h2>
+      <p>Your saved fortnightly route. Nothing about it changes unless you ask.</p>
+      <button class="primary-btn big-btn" id="btnCheckJourney" type="button">Check my journey now</button>
     </div>
 
-    <button class="text-link-btn" id="btnMore" type="button">More options</button>
-  </section>
-
-  <!-- ============ ROUTE DETAIL ============ -->
-  <section class="screen" id="screen-route">
-    <h1>Your route</h1>
     <div id="disruptionBanner" class="banner" hidden></div>
 
-    <div id="routeMap" class="route-map" aria-hidden="true"></div>
-    <p class="map-attribution">© OpenStreetMap contributors · route by OneMap <span id="mapSource"></span></p>
+    <div id="routeCards"></div>
 
-    <ol class="leg-list" id="legList"></ol>
+    <div id="routeMap" class="route-map" style="height:180px;border-radius:10px;overflow:hidden;border:1px solid var(--line);margin-bottom:0.3rem;" hidden></div>
+    <p class="lede small" id="mapAttribution" hidden>© OpenStreetMap contributors</p>
 
-    <div class="action-row">
-      <button class="secondary-btn" id="btnNarrateRoute" type="button">🔊 Read this aloud</button>
-      <button class="secondary-btn" id="btnOptionalGame" type="button" hidden>🎮 Play while you wait</button>
+    <div id="liftMini"></div>
+    <button class="text-link-btn" id="btnFullLiftCheck" type="button" hidden>See full lift check + save as image →</button>
+
+    <details class="disclosure" id="exitDisclosure" hidden>
+      <summary>Exit &amp; crowd guide for Outram Park <span class="text-link-btn" style="margin:0;">show</span></summary>
+      <div class="disclosure-body" id="exitGuideBody"></div>
+    </details>
+
+    <details class="disclosure" id="toiletDisclosure" hidden>
+      <summary>Nearest accessible toilets <span class="text-link-btn" style="margin:0;">show</span></summary>
+      <div class="disclosure-body" id="toiletBody"></div>
+    </details>
+
+    <div class="action-row" style="margin-top:1rem; display:flex; gap:0.7rem; flex-wrap:wrap;">
+      <button class="secondary-btn" id="btnNarrateRoute" type="button" hidden>🔊 Read this aloud</button>
     </div>
   </section>
 
-  <!-- ============ LIFT / SAFETY STATUS ============ -->
-  <section class="screen" id="screen-lift">
+  <!-- ============ FULL LIFT CHECK (reached from Journey) ============ -->
+  <section class="tab-panel" id="panel-lift">
+    <button class="text-link-btn" id="btnBackToJourney" type="button">← Back to journey</button>
     <h1>Is my route safe?</h1>
+    <h2>Today</h2>
     <div id="liftBannerToday" class="status-banner"></div>
     <h2>Tomorrow</h2>
     <div id="liftBannerTomorrow" class="status-banner"></div>
-
-    <div id="liftDetailToday" class="lift-detail"></div>
-
-    <div class="action-row">
+    <div id="liftDetailToday"></div>
+    <div class="action-row" style="display:flex; gap:0.7rem; flex-wrap:wrap; margin-top:1rem;">
       <button class="secondary-btn" id="btnNarrateLift" type="button">🔊 Read this aloud</button>
       <button class="primary-btn" id="btnSaveImage" type="button">⬇ Save as image</button>
     </div>
@@ -87,87 +83,122 @@
     <canvas id="snapshotCanvas" width="640" height="420" hidden></canvas>
   </section>
 
-  <!-- ============ MORE / SECONDARY OPTIONS ============ -->
-  <section class="screen" id="screen-more">
-    <h1>More options</h1>
-    <div class="menu-list">
-      <button class="menu-item" data-goto="screen-prefs">Preferences &amp; my needs</button>
-      <button class="menu-item" data-goto="screen-report">Report a barrier</button>
-      <button class="menu-item" data-goto="screen-family">Family mode</button>
-      <button class="menu-item" id="btnResetDevice">Reset my saved preferences</button>
+  <!-- ============ ROUTINES ============ -->
+  <section class="tab-panel" id="panel-routines">
+    <h1>Saved routines</h1>
+    <p class="lede">Saved on this device and available even without a signal — no account needed.</p>
+    <form id="routineForm">
+      <div class="field"><label for="rtName">Routine name</label><input id="rtName" placeholder="e.g. SGH check-up" required /></div>
+      <div class="field"><label for="rtFrom">From</label><input id="rtFrom" placeholder="e.g. Home" required /></div>
+      <div class="field"><label for="rtTo">To</label><input id="rtTo" placeholder="e.g. Outram Park" required /></div>
+      <div class="field"><label for="rtTime">Usual departure time</label><input id="rtTime" type="time" value="09:00" required /></div>
+      <button class="primary-btn big-btn" type="submit">Save routine</button>
+    </form>
+    <div id="routineList" style="margin-top:1.2rem;"></div>
+  </section>
+
+  <!-- ============ REWARDS ============ -->
+  <section class="tab-panel" id="panel-rewards">
+    <h1>Rewards</h1>
+    <p class="lede">Small thank-yous for safe, considerate commuting — nothing here is a real payment system yet.</p>
+
+    <div class="reward-card">
+      <strong>Safety stamps</strong>
+      <p class="lede small" style="margin:0.3rem 0 0;">Tap after a journey goes smoothly. 10 stamps = a free Kopi-O-Kosong.</p>
+      <div class="stamp-row" id="stampRow"></div>
+      <button class="secondary-btn" id="btnAddStamp" type="button">I completed this journey safely</button>
+      <div id="voucherArea"></div>
+    </div>
+
+    <div class="reward-card">
+      <strong>Send a virtual orchid 🌸</strong>
+      <p class="lede small" style="margin:0.3rem 0 0;">Thank someone for giving up a seat or helping you out — enter their NexRoute code.</p>
+      <div class="field"><label for="orchidToCode">Their code</label><input id="orchidToCode" style="text-transform:uppercase" /></div>
+      <div class="field"><label for="orchidMsg">A short thank-you (optional)</label><input id="orchidMsg" maxlength="80" /></div>
+      <button class="secondary-btn" id="btnSendOrchid" type="button">Send orchid</button>
+      <h2 style="margin-top:1rem;">Orchids you've received</h2>
+      <div class="orchid-inbox" id="orchidInbox"></div>
+    </div>
+
+    <div class="reward-card">
+      <strong>Kampung Trivia 🏘️</strong>
+      <p class="lede small" style="margin:0.3rem 0 0;">A gentle quiz about the old days, food and landmarks along the way to Outram Park.</p>
+      <button class="secondary-btn" id="btnPlayTrivia" type="button">Play Kampung Trivia</button>
+      <p class="lede small" id="triviaGate" hidden>Turn on "Optional games" in Preferences to play (it uses a little more battery).</p>
+    </div>
+  </section>
+
+  <!-- ============ FAMILY & HELP ============ -->
+  <section class="tab-panel" id="panel-family">
+    <h1>Family &amp; help</h1>
+
+    <button class="primary-btn big-btn" id="btnCallStaff" type="button">📞 Call station staff</button>
+
+    <h2>Your family code</h2>
+    <p class="lede">Share this with someone you trust. They see only your last check-in — never live location.</p>
+    <div class="family-code" id="familyCode">——————</div>
+    <button class="secondary-btn" id="btnCheckIn" type="button">I've arrived — check in now</button>
+
+    <h2>Following someone?</h2>
+    <div class="field"><label for="familyLookupCode">Enter their code</label><input id="familyLookupCode" style="text-transform:uppercase" /></div>
+    <button class="secondary-btn" id="btnFamilyLookup" type="button">Check status</button>
+    <div id="familyStatus" class="status-banner" hidden></div>
+
+    <h2>EZ-Link (concept)</h2>
+    <p class="lede small">There's no public EZ-Link developer API today, so this is a mock-up of what linking a card could look like — not a real balance.</p>
+    <div class="ezlink-card">
+      <div>EZ-Link · Demo card</div>
+      <div class="balance">$12.30</div>
+      <div style="font-size:0.85rem;opacity:0.85;">Last top-up: 3 days ago · not real data</div>
     </div>
   </section>
 
   <!-- ============ PREFERENCES ============ -->
-  <section class="screen" id="screen-prefs">
-    <h1>Preferences &amp; my needs</h1>
+  <section class="tab-panel" id="panel-prefs">
+    <h1>Preferences</h1>
+
+    <h2>Who's using NexRoute?</h2>
+    <p class="lede small">Sets sensible text size and simplicity defaults — everything below can still be fine-tuned.</p>
+    <div class="age-mode-row" id="ageModeRow">
+      <button class="age-mode-btn" data-age="youth" type="button">Youth</button>
+      <button class="age-mode-btn is-selected" data-age="adult" type="button">Adult</button>
+      <button class="age-mode-btn" data-age="senior" type="button">Senior</button>
+    </div>
+
     <form id="prefsForm">
       <label class="pref-toggle"><input type="checkbox" id="prefAvoidStairs" /> <span>Avoid stairs — need lifts</span></label>
       <label class="pref-toggle"><input type="checkbox" id="prefSheltered" /> <span>Prefer sheltered walkways</span></label>
       <label class="pref-toggle"><input type="checkbox" id="prefSlowWalk" /> <span>Walk slowly — allow extra time</span></label>
-      <label class="pref-toggle"><input type="checkbox" id="prefLargeText" /> <span>Large text</span></label>
+      <label class="pref-toggle"><input type="checkbox" id="prefLargeText" /> <span>Extra-large text</span></label>
       <label class="pref-toggle"><input type="checkbox" id="prefHighContrast" /> <span>High contrast colours</span></label>
-      <label class="pref-toggle"><input type="checkbox" id="prefGames" /> <span>Show optional games while waiting <small>(uses more battery)</small></span></label>
+      <label class="pref-toggle"><input type="checkbox" id="prefGames" /> <span>Show optional games <small>(uses more battery)</small></span></label>
       <button class="primary-btn big-btn" type="submit">Save preferences</button>
       <p class="save-confirm" id="prefsSaved" role="status"></p>
     </form>
 
-    <h2>Read aloud settings</h2>
-    <div class="field">
-      <label for="speechRate">Speaking speed</label>
-      <input type="range" id="speechRate" min="0.7" max="1.3" step="0.1" value="0.95" />
-    </div>
-  </section>
+    <h2>Read aloud speed</h2>
+    <div class="field"><input type="range" id="speechRate" min="0.7" max="1.3" step="0.1" value="0.95" /></div>
 
-  <!-- ============ REPORT A BARRIER ============ -->
-  <section class="screen" id="screen-report">
-    <h1>Report a barrier</h1>
-    <p class="lede">Your report is reviewed before it's shown to other commuters, so a mistaken tap can't send out a false alert.</p>
+    <h2>Report a barrier</h2>
+    <p class="lede small">Reviewed before it's shown to other commuters, so a mistaken tap can't send a false alert.</p>
     <form id="reportForm">
       <div class="field">
         <label for="reportType">What's the problem?</label>
-        <select id="reportType">
-          <option>Lift not working</option>
-          <option>Exit blocked</option>
-          <option>No shelter from rain</option>
-          <option>Something else</option>
-        </select>
+        <select id="reportType"><option>Lift not working</option><option>Exit blocked</option><option>No shelter from rain</option><option>Something else</option></select>
       </div>
-      <div class="field">
-        <label for="reportComment">Tell us more</label>
-        <textarea id="reportComment" rows="3"></textarea>
-      </div>
+      <div class="field"><label for="reportComment">Tell us more</label><textarea id="reportComment" rows="2"></textarea></div>
       <button class="primary-btn big-btn" type="submit">Submit report</button>
     </form>
-
-    <h2>My reports</h2>
-    <div id="myReports" class="menu-list"></div>
-
+    <div id="myReports" style="margin-top:0.8rem;"></div>
     <button class="text-link-btn" id="btnStaffDemo" type="button">Staff demo view (for judges)</button>
-    <div id="staffPanel" class="menu-list" hidden></div>
-  </section>
+    <div id="staffPanel" hidden></div>
 
-  <!-- ============ FAMILY MODE ============ -->
-  <section class="screen" id="screen-family">
-    <h1>Family mode</h1>
-    <p class="lede">Share this code with someone you trust. They can see when you last checked in — never your live location.</p>
-    <div class="family-code" id="familyCode">——————</div>
-
-    <button class="secondary-btn" id="btnCheckIn" type="button">I've arrived — check in now</button>
-
-    <hr />
-    <h2>Following someone?</h2>
-    <div class="field">
-      <label for="familyLookupCode">Enter their code</label>
-      <input id="familyLookupCode" type="text" style="text-transform:uppercase" />
-    </div>
-    <button class="secondary-btn" id="btnFamilyLookup" type="button">Check status</button>
-    <div id="familyStatus" class="status-banner" hidden></div>
+    <h2>Your device</h2>
+    <button class="menu-item" id="btnResetDevice" type="button">Reset my saved preferences</button>
   </section>
 
 </main>
 
-<!-- ============ Reusable confirmation modal ============ -->
 <div class="modal-overlay" id="confirmOverlay" hidden>
   <div class="modal-card" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
     <p id="confirmTitle">Are you sure?</p>
@@ -178,7 +209,6 @@
   </div>
 </div>
 
-<!-- ============ Voice / audio control bar ============ -->
 <div class="audio-bar" id="audioBar" hidden>
   <button id="audioPlayPause" type="button">⏸</button>
   <button id="audioReplay" type="button">⟲ Replay</button>
@@ -186,8 +216,15 @@
   <button id="audioStop" type="button">✕ Stop</button>
 </div>
 
+<div class="modal-overlay" id="triviaOverlay" hidden>
+  <div class="modal-card" style="max-width:420px;">
+    <div class="trivia-card" id="triviaCard" style="box-shadow:none;border:none;padding:0;"></div>
+    <button class="secondary-btn" id="triviaClose" type="button" style="width:100%;margin-top:0.8rem;">Close</button>
+  </div>
+</div>
+
 <footer class="app-footer">
-  <p>Prototype build. Live-data badges show real LTA / data.gov.sg calls when a key is set — otherwise labelled demo data. See README.</p>
+  <p>Prototype build. Badges show real LTA / data.gov.sg calls when a key is set — otherwise labelled demo or manual data. See README.</p>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
